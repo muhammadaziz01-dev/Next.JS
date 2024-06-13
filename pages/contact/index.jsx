@@ -1,16 +1,33 @@
 "use client"
-import Head from 'next/head'
-// import { useParams } from 'next/navigation'
+import axios from 'axios';
 import { useRouter } from 'next/navigation'
+import {useState , useEffect} from 'react'
+
+import Head from 'next/head'
 
 function Index() {
-     
+
+    const [contacts, setContacts] = useState([]) 
     const router = useRouter()
-    console.log(router);
 
     const singlePage = (id) => {
         router.push(`/contact/${id}`)
     }
+
+    const userGetData = async()=>{
+       try{
+        const res = await axios.get('https://jsonplaceholder.typicode.com/users')
+        setContacts(res.data)
+        console.log(res.data);
+
+       }catch(err){
+         console.log(err);
+       }
+    }
+
+    useEffect(() => {
+        userGetData()
+    }, [])
 
     return <>
         <div className='container  mx-auto px-10'>
@@ -18,14 +35,17 @@ function Index() {
                 <title>Contact page</title>
             </Head>
             <div className='py-2'>
-                <h1 className='text-[20px] font-medium py-2'>This is the contact page</h1>
-                <div className='grid grid-cols-2 gap-5'>
-                    {[1, 2, 3, 4, 5, 6, 7, 8].map((item, index) => {
+                <h1 className='text-[20px] font-medium py-2'>This is the users page</h1>
+                <div className='grid grid-cols-3 gap-5'>
+                    {contacts?.map((item, index) => {
                         return (
-                            <div key={index} onClick={()=>singlePage(item)}  className='bg-gray-200 cursor-pointer p-3 rounded-md shadow-md'>
-                                <p>
-                                   {item + ")"}   Lorem, ipsum dolor sit amet consectetur adipisicing elit. Odio ea quam fugiat, officia fugit voluptatem voluptates doloremque eligendi, minima commodi laboriosam aperiam magnam? Doloribus explicabo et, numquam dolorem dignissimos autem ex ea, ut cumque porro esse voluptatum architecto rem blanditiis eveniet nisi? Dolores deserunt libero quod? Nesciunt itaque illum quibusdam?
-                                </p>
+                            <div key={index} onClick={()=>singlePage(item?.id)}  className='bg-gray-200 cursor-pointer p-3 rounded-md shadow-md'>
+                                <h1 className="text-center py-2 font-medium text-[18px]">{item?.name}</h1>
+                                <p className="flex items-center justify-between px-3 py-1 font-medium">Email: <span>{item?.email}</span></p>
+                                <p className="flex items-center justify-between px-3 py-1 font-medium">Phone: <span>{item?.phone}</span></p>
+                                <p className="flex items-center justify-between px-3 py-1 font-medium">Website: <span>{item?.website}</span></p>
+                                <p className="flex items-center justify-between px-3 py-1 font-medium">Company: <span>{item?.company?.name}</span></p>
+                                <p className="flex items-center justify-between px-3 py-1 font-medium">Address: <span>{item?.address?.city}</span></p>
                             </div>
                         )
                     })}
