@@ -1,7 +1,11 @@
 import Link from 'next/link'
 import React from 'react'
+import { useRouter } from 'next/router'
 
 function Header() {
+    const router = useRouter()
+   const path = router.pathname
+    
 
   const data = [
     {
@@ -30,7 +34,7 @@ function Header() {
           {
             data.map(item => (
               <li key={item.id}>
-                <Link href={item.path} className='text-[18px] font-medium text-white'>
+                <Link href={item.path} className={path == item.path ? "text-[18px] font-medium bg-white text-gray-500 py-1 px-2 rounded-md" : "text-[18px] font-medium text-white py-1 px-2"}>
                   {item.title}
                 </Link>
               </li>
